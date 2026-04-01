@@ -1,0 +1,15 @@
+version: "3.8"
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: syshub_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: syshub_db_crud
+      MYSQL_USER: user_syshub
+      MYSQL_PASSWORD: root_syshub
+    volumes:
+      - ./mysql:/var/lib/mysql
+    ports:
+      - "3307:3306"
