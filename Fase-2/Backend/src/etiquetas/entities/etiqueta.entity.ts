@@ -1,0 +1,11 @@
+import { Column, Entity } from "typeorm";
+
+@Entity()
+export class Etiqueta {
+
+    @Column({ primary: true, generated: true })
+    id: number;
+
+    @Column({ unique: true })
+    nombre: string;
+}
