@@ -1,24 +1,25 @@
-import { Entity, Column, CreateDateColumn } from "typeorm";
+import { Usuario } from "src/usuarios/entities/usuario.entity";
+import { Entity, Column, CreateDateColumn, JoinColumn, ManyToOne } from "typeorm";
 
 @Entity()
 export class Actividade {
 
     @Column({ primary: true, generated: true})
     id: number;
-/*
-      @ManyToOne(() => Usuario, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'usuario_id' })*/
-  usuario_id: string;
 
-  @Column()
-  tipoAccion: string;
+  @ManyToOne(() => Usuario, (u) => u.actividades, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'usuario_id' })
+  usuario: Usuario;
 
-  @Column({ nullable: true })
-  referencia_id: number;
+  @Column({ name: 'tipo_accion', type: 'varchar', length: 80 })
+  tipoAccion: string; // 'publicacion_curso' | 'foro' | 'blog' | 'respuesta' | ...
+
+  @Column({ name: 'referencia_id', type: 'int', unsigned: true, nullable: true })
+  referenciaId: number | null;
 
   @Column({ type: 'text', nullable: true })
   detalle: string | null;
 
-  @CreateDateColumn()
-  creado_en: Date;
+  @CreateDateColumn({ name: 'creado_en', type: 'datetime' })
+  creadoEn: Date;
 }

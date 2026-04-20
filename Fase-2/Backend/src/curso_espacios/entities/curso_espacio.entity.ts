@@ -1,4 +1,7 @@
-import { Column, Entity, JoinColumn } from "typeorm";
+import { CursosDisponible } from "src/cursos_disponibles/entities/cursos_disponible.entity";
+import { PublicacionesCurso } from "src/publicaciones_curso/entities/publicaciones_curso.entity";
+import { Usuario } from "src/usuarios/entities/usuario.entity";
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToOne } from "typeorm";
 
 @Entity()
 export class CursoEspacio {
@@ -6,34 +9,41 @@ export class CursoEspacio {
     @Column({ primary: true, generated: true })
     id: number;
 
-      /*@ManyToOne(() => CursoDisponible, { nullable: false })
-  @JoinColumn({ name: 'curso_disponible_id' })*/
-  @Column()
-  curso_disponible_id: number;
+  @ManyToOne(() => CursosDisponible, (cd) => cd.espacios)
+  @JoinColumn({ name: 'curso_disponible_id' })
+  cursoDisponible: CursosDisponible;
 
-  @Column()
+  @Column({ type: 'varchar', length: 10 })
   seccion: string;
 
- /* @ManyToOne(() => Usuario, { nullable: false })
-  @JoinColumn({ name: 'catedratico_id' })*/
-    @Column()
-  catedratico_id: string;
-/*
-  @ManyToOne(() => PublicacionCurso, { nullable: true })
-  @JoinColumn({ name: 'publicacion_id' })*/
-  @Column({ nullable: true })
-  publicacion_id: string;
+  @ManyToOne(() => Usuario, (u) => u.cursosComoDocente)
+  @JoinColumn({ name: 'catedratico_id' })
+  catedratico: Usuario;
 
-  @Column()
-  semestre: number; // CHECK IN (1,2) en BD
+  @OneToOne(() => PublicacionesCurso, { nullable: true })
+  @JoinColumn({ name: 'publicacion_id' })
+  publicacion: PublicacionesCurso;
+
+  @Column({ type: 'tinyint', unsigned: true })
+  semestre: number; 
 
   @Column({ type: 'year' })
-  anio: number;
-/*
-  @OneToMany(() => CursoEspacioAuxiliar, (cea) => cea.cursoEspacio)
-  auxiliares: CursoEspacioAuxiliar[];
+  year: number;
 
-  @OneToMany(() => CursoEspacioEstudiante, (cee) => cee.cursoEspacio)
-  estudiantes: CursoEspacioEstudiante[];
-  */
+  @ManyToMany(() => Usuario, (u) => u.cursosComoAuxiliar)
+  @JoinTable({
+    name: 'curso_espacio_auxiliares',
+    joinColumn:        { name: 'curso_espacio_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'auxiliar_id',      referencedColumnName: 'id' },
+  })
+  auxiliares: Usuario[];
+
+  // Estudiantes inscritos (agrega el administrador)
+  @ManyToMany(() => Usuario, (u) => u.cursosComoEstudiante)
+  @JoinTable({
+    name: 'curso_espacio_estudiantes',
+    joinColumn:        { name: 'curso_espacio_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'estudiante_id',    referencedColumnName: 'id' },
+  })
+  estudiantes: Usuario[];
 }

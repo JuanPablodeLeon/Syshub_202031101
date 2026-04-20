@@ -1,26 +1,40 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateEstadoPerfilDto } from './dto/create-estado_perfil.dto';
 import { UpdateEstadoPerfilDto } from './dto/update-estado_perfil.dto';
+import { In, Repository } from 'typeorm';
+import { EstadoPerfil } from './entities/estado_perfil.entity';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class EstadoPerfilService {
-  create(createEstadoPerfilDto: CreateEstadoPerfilDto) {
-    return 'This action adds a new estadoPerfil';
+
+  constructor(
+    @InjectRepository(EstadoPerfil)
+    private estadoPerfilRepository: Repository<EstadoPerfil>,
+  ) {}
+
+  async create(createEstadoPerfilDto: CreateEstadoPerfilDto) {
+    const estado = await this.estadoPerfilRepository.findOneBy({ nombre: createEstadoPerfilDto.nombre });
+    if(estado) {
+      throw new BadRequestException('El estado de perfil ya existe');
+    }
+    const estadoSave = this.estadoPerfilRepository.create(createEstadoPerfilDto);
+    return await this.estadoPerfilRepository.save(estadoSave);
   }
 
-  findAll() {
-    return `This action returns all estadoPerfil`;
+  async findAll() {
+    return await this.estadoPerfilRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} estadoPerfil`;
+  async findOne(id: number) {
+    return await this.estadoPerfilRepository.findOneBy({ id });
   }
 
-  update(id: number, updateEstadoPerfilDto: UpdateEstadoPerfilDto) {
-    return `This action updates a #${id} estadoPerfil`;
+  async update(id: number, updateEstadoPerfilDto: UpdateEstadoPerfilDto) {
+    return await this.estadoPerfilRepository.update(id, updateEstadoPerfilDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} estadoPerfil`;
+  async remove(id: number) {
+    return await this.estadoPerfilRepository.softDelete(id);
   }
 }

@@ -1,4 +1,6 @@
-import { Column, Entity } from "typeorm";
+import { Clasificacion } from "src/common/enums/clasificacion.enum";
+import { Usuario } from "src/usuarios/entities/usuario.entity";
+import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 
 @Entity()
 export class ClasesGrabada {
@@ -6,19 +8,19 @@ export class ClasesGrabada {
     @Column({ primary: true, generated: true})
     id: number;
 
-     /* @ManyToOne(() => Usuario, { nullable: false })
-  @JoinColumn({ name: 'id_creador' })*/
-  creador: string;
+  @ManyToOne(() => Usuario, (u) => u.clasesGrabadas)
+  @JoinColumn({ name: 'id_creador' })
+  creador: Usuario;
 
   @Column()
   nombre: string;
 
   @Column()
-  fecha: Date; // Date en formato 'YYYY-MM-DD'
+  fecha: Date;
 
   @Column()
   enlace: string;
 
-  @Column()
+  @Column({type: 'enum', enum: Clasificacion})
   clasificacion: string;
 }

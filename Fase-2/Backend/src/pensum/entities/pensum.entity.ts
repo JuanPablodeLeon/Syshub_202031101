@@ -1,4 +1,7 @@
-import { Column, Entity } from "typeorm";
+import { Carrera } from "src/carreras/entities/carrera.entity";
+import { CursosDisponible } from "src/cursos_disponibles/entities/cursos_disponible.entity";
+import { YearPensum } from "src/year_pensum/entities/year_pensum.entity";
+import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 
 @Entity()
 export class Pensum {
@@ -7,20 +10,18 @@ export class Pensum {
     id: number;
 
     @Column()
-  semestre: number; // CHECK manual en BD: 1-12
+  semestre: number;
 
-  /*@ManyToOne(() => AnioPensum, { nullable: false })
-  @JoinColumn({ name: 'anio_pensum_id' })*/
-  @Column()
-  year_pensum: number;
 
-  /*@ManyToOne(() => Carrera, { nullable: false })
-  @JoinColumn({ name: 'carrera_id' })*/
-  @Column()
-  carrera: string;
+  @ManyToOne(() => YearPensum, (ap) => ap.pensums)
+  @JoinColumn({ name: 'year_pensum_id' })
+  yearPensum: YearPensum;
 
-  /*@ManyToOne(() => CursoDisponible, { nullable: false })
-  @JoinColumn({ name: 'curso_disponible_id' })*/
-  @Column()
-  cursoDisponible: string;
+  @ManyToOne(() => Carrera, (c) => c.pensums)
+  @JoinColumn({ name: 'carrera_id' })
+  carrera: Carrera;
+
+  @ManyToOne(() => CursosDisponible, (cd) => cd.pensums)
+  @JoinColumn({ name: 'curso_disponible_id' })
+  cursoDisponible: CursosDisponible; 
 }

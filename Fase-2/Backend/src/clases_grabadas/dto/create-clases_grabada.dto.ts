@@ -1,1 +1,4 @@
-export class CreateClasesGrabadaDto {}
+export class CreateClasesGrabadaDto {
+
+
+}

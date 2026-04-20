@@ -1,26 +1,49 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Role } from './entities/role.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class RolesService {
-  create(createRoleDto: CreateRoleDto) {
-    return 'This action adds a new role';
+constructor(
+  @InjectRepository(Role)
+  private roleRepository: Repository<Role>,
+) {}
+
+  async create(createRoleDto: CreateRoleDto) {
+    const role = await this.roleRepository.findOneBy({ nombre: createRoleDto.nombre });
+    if(role) {
+      throw new BadRequestException('El rol ya existe');
+    }
+    const roleSave = this.roleRepository.create(createRoleDto);
+    return await this.roleRepository.save(roleSave);
   }
 
-  findAll() {
-    return `This action returns all roles`;
+  async findAll() {
+    return await this.roleRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} role`;
+  async findOne(id: number) {
+  const entity = await this.roleRepository.findOneBy({ id });
+  if (!entity) throw new NotFoundException(`Rol no existente`);
+  return entity;
   }
 
-  update(id: number, updateRoleDto: UpdateRoleDto) {
-    return `This action updates a #${id} role`;
+  async update(id: number, updateRoleDto: UpdateRoleDto) {
+    const role = await this.roleRepository.findOneBy({ id });
+    if(!role){
+      throw new BadRequestException('El rol no existe');
+    }
+    return await this.roleRepository.update(id, updateRoleDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} role`;
+  async remove(id: number) {
+    const role = await this.roleRepository.findOneBy({ id });
+    if(!role){
+      throw new BadRequestException('El rol no existe');
+    }
+    return await this.roleRepository.softDelete(id);
   }
 }

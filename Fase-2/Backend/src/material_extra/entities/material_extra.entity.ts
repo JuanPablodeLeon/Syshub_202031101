@@ -1,4 +1,6 @@
-import { Column, CreateDateColumn, Entity, UpdateDateColumn } from "typeorm";
+import { Proyecto } from "src/proyectos/entities/proyecto.entity";
+import { Usuario } from "src/usuarios/entities/usuario.entity";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, UpdateDateColumn } from "typeorm";
 
 @Entity()
 export class MaterialExtra {
@@ -6,19 +8,17 @@ export class MaterialExtra {
     @Column({ primary: true, generated: true })
     id: number;
 
-    /*@ManyToOne(() => Usuario, { nullable: false })
-  @JoinColumn({ name: 'id_creador' })*/
-  @Column()
-  id_creador: string;
+@ManyToOne(() => Usuario, (u) => u.materialesExtra)
+  @JoinColumn({ name: 'id_creador' })
+  creador: Usuario;
 
-  /*@ManyToOne(() => Proyecto, { nullable: false, unique: true })
-  @JoinColumn({ name: 'proyecto_id' })*/
-  @Column()
-  proyecto_id: string;
+  @OneToOne(() => Proyecto)
+  @JoinColumn({ name: 'proyecto_id' })
+  proyecto: Proyecto;
 
-  @CreateDateColumn()
-  fecha_subido: Date;
+  @CreateDateColumn({ name: 'fecha_subido', type: 'datetime' })
+  fechaSubido: Date;
 
-  @UpdateDateColumn()
-  fecha_modificado: Date;
+  @UpdateDateColumn({ name: 'fecha_modificado', type: 'datetime' })
+  fechaModificado: Date;
 }

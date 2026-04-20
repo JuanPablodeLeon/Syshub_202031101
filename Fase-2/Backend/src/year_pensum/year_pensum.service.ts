@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateYearPensumDto } from './dto/create-year_pensum.dto';
 import { UpdateYearPensumDto } from './dto/update-year_pensum.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -26,7 +26,9 @@ export class YearPensumService {
   }
 
   async findOne(id: number) {
-    return await this.yearPensumRepository.findOneBy({ id });
+  const entity = await this.yearPensumRepository.findOneBy({ id });
+  if (!entity) throw new NotFoundException(`Año no existente`);
+  return entity;
   }
 
   async update(id: number, updateYearPensumDto: UpdateYearPensumDto) {
@@ -34,6 +36,10 @@ export class YearPensumService {
   }
 
   async remove(id: number) {
+    const existingYear = await this.yearPensumRepository.findOneBy({ id });
+    if (!existingYear) {
+      throw new BadRequestException('El año no existe');
+    }
     return await this.yearPensumRepository.softDelete(id);
   }
 }

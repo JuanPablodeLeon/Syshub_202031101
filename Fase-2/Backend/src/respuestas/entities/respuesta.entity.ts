@@ -1,4 +1,5 @@
-import { Collection, Column, CreateDateColumn, Entity } from "typeorm";
+import { Usuario } from "src/usuarios/entities/usuario.entity";
+import { Collection, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 
 @Entity()
 export class Respuesta {
@@ -6,25 +7,24 @@ export class Respuesta {
     @Column({ primary: true, generated: true })
     id: number;
 
-    /*  @ManyToOne(() => Usuario, { nullable: false })
-  @JoinColumn({ name: 'id_creador' })*/
-@Column()
-  id_creador: number;
+  @ManyToOne(() => Usuario, (u) => u.respuestas)
+  @JoinColumn({ name: 'id_creador' })
+  creador: Usuario;
 
-  @Column()
+  @Column({ type: 'varchar', length: 2000 })
   descripcion: string;
 
-  @Column({ default: 0 })
-  cant_valoracion: number;
-/*
-  @ManyToOne(() => Respuesta, { nullable: true })
-  @JoinColumn({ name: 'respuesta_padre' })*/
-  @Column({ nullable: true })
-  respuesta_padre: string;
-/*
-  @OneToMany(() => Respuesta, (r) => r.respuestaPadre)
-  respuestasHijas: Respuesta[];*/
+  @Column({ name: 'cant_valoracion', type: 'int', default: 0 })
+  cantValoracion: number;
 
-  @CreateDateColumn({ name: 'creado_en' })
-  creado_en: Date;
+  // Auto-referencial: una respuesta puede tener sub-respuestas
+  @ManyToOne(() => Respuesta, (r) => r.subRespuestas, { nullable: true })
+  @JoinColumn({ name: 'respuesta_padre' })
+  padre: Respuesta | null;
+
+  @OneToMany(() => Respuesta, (r) => r.padre)
+  subRespuestas: Respuesta[];
+
+  @CreateDateColumn({ name: 'creado_en', type: 'datetime' })
+  creadoEn: Date;
 }
