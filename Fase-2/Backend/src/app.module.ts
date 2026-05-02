@@ -18,6 +18,8 @@ import { RespuestasModule } from './respuestas/respuestas.module';
 import { PublicacionesForoModule } from './publicaciones_foro/publicaciones_foro.module';
 import { BlogArticulosModule } from './blog_articulos/blog_articulos.module';
 import { ActividadesModule } from './actividades/actividades.module';
+import { AuthModule } from './auth/auth.module';
+import { ReportesModule } from './reportes/reportes.module';
 
 
 @Module({
@@ -50,6 +52,8 @@ import { ActividadesModule } from './actividades/actividades.module';
     PublicacionesForoModule,
     BlogArticulosModule,
     ActividadesModule,
+    AuthModule,
+    ReportesModule,
   ],
   controllers: [],
   providers: [],

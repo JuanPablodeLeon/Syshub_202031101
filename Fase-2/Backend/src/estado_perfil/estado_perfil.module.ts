@@ -8,5 +8,6 @@ import { EstadoPerfil } from './entities/estado_perfil.entity';
   imports: [TypeOrmModule.forFeature([EstadoPerfil])],
   controllers: [EstadoPerfilController],
   providers: [EstadoPerfilService],
+  exports:[TypeOrmModule]
 })
 export class EstadoPerfilModule {}

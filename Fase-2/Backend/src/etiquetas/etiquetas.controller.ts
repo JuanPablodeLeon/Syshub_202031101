@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
 import { EtiquetasService } from './etiquetas.service';
 import { CreateEtiquetaDto } from './dto/create-etiqueta.dto';
 import { UpdateEtiquetaDto } from './dto/update-etiqueta.dto';
@@ -18,17 +18,18 @@ export class EtiquetasController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.etiquetasService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.etiquetasService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateEtiquetaDto: UpdateEtiquetaDto) {
-    return this.etiquetasService.update(+id, updateEtiquetaDto);
+  /** GET /etiquetas/:id/contenido — foro + blog con esta etiqueta */
+  @Get(':id/contenido')
+  findContenido(@Param('id', ParseIntPipe) id: number) {
+    return this.etiquetasService.findContenidoByEtiqueta(id);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.etiquetasService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.etiquetasService.remove(id);
   }
 }

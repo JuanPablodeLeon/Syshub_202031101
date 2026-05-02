@@ -8,5 +8,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
   imports: [TypeOrmModule.forFeature([YearPensum])],
   controllers: [YearPensumController],
   providers: [YearPensumService],
+  exports: [TypeOrmModule]
 })
 export class YearPensumModule {}

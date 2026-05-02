@@ -9,7 +9,7 @@ import { Proyecto } from "src/proyectos/entities/proyecto.entity";
 import { PublicacionesForo } from "src/publicaciones_foro/entities/publicaciones_foro.entity";
 import { Respuesta } from "src/respuestas/entities/respuesta.entity";
 import { Role } from "src/roles/entities/role.entity";
-import { Column, DeleteDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany } from "typeorm";
 
 @Entity()
 export class Usuario {
@@ -29,7 +29,7 @@ export class Usuario {
     @Column()
     password: string;
 
-    @Column()
+    @Column({nullable: true})
     description: string;
 
     @ManyToOne(() => Role, (role) => role.id, {
@@ -50,10 +50,16 @@ export class Usuario {
   })
   carreras: Carrera[];
 
-    @Column()
+    @Column({
+      nullable: true,
+    })
     creado_en: Date;
 
-    @Column()
+
+    
+    @Column({
+      nullable: true,
+    })
     ultimo_acceso: Date;
 
     @DeleteDateColumn()

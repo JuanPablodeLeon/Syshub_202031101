@@ -1,0 +1,300 @@
+@startuml Syshub Database
+!pragma layout smetana
+
+' ============================================
+' TABLAS
+' ============================================
+
+entity "actividade" as actividade {
+  * id : INT <<PK>>
+  --
+  referencia_id : INT UNSIGNED
+  detalle : TEXT
+  creado_en : DATETIME(6)
+  tipo_accion : VARCHAR(80)
+  usuario_id : INT <<FK>>
+}
+
+entity "archivos_proyecto" as archivos_proyecto {
+  * id : INT <<PK>>
+  --
+  nombre : VARCHAR(255)
+  subido_en : DATETIME(6)
+  tipo_mime : VARCHAR(100)
+  tamano_bytes : INT UNSIGNED
+  url : VARCHAR(500)
+  proyecto_id : INT <<FK>>
+}
+
+entity "blog_articulo" as blog_articulo {
+  * id : INT <<PK>>
+  --
+  descripcion : TEXT
+  cant_valoracion : INT
+  hora_creacion : DATETIME(6)
+  hora_modificado : DATETIME(6)
+  titulo : VARCHAR(300)
+  id_creador : INT <<FK>>
+}
+
+entity "blog_etiquetas" as blog_etiquetas {
+  * blog_id : INT <<PK, FK>>
+  * etiqueta_id : INT <<PK, FK>>
+}
+
+entity "blog_respuestas" as blog_respuestas {
+  * blog_id : INT <<PK, FK>>
+  * respuesta_id : INT <<PK, FK>>
+}
+
+entity "carrera" as carrera {
+  * id : INT <<PK>>
+  --
+  nombre : VARCHAR(255)
+  descripcion : VARCHAR(255)
+  deletedAt : DATETIME(6)
+}
+
+entity "clases_grabada" as clases_grabada {
+  * id : INT <<PK>>
+  --
+  nombre : VARCHAR(255)
+  fecha : DATETIME
+  enlace : VARCHAR(255)
+  clasificacion : ENUM
+  id_creador : INT <<FK>>
+}
+
+entity "curso_espacio" as curso_espacio {
+  * id : INT <<PK>>
+  --
+  year : YEAR
+  seccion : VARCHAR(10)
+  semestre : TINYINT
+  curso_disponible_id : INT <<FK>>
+  catedratico_id : INT <<FK>>
+  publicacion_id : INT <<FK>>
+}
+
+entity "curso_espacio_auxiliares" as curso_espacio_auxiliares {
+  * curso_espacio_id : INT <<PK, FK>>
+  * auxiliar_id : INT <<PK, FK>>
+}
+
+entity "curso_espacio_estudiantes" as curso_espacio_estudiantes {
+  * curso_espacio_id : INT <<PK, FK>>
+  * estudiante_id : INT <<PK, FK>>
+}
+
+entity "curso_prerequisitos" as curso_prerequisitos {
+  * curso_id : INT <<PK, FK>>
+  * prerequisito_id : INT <<PK, FK>>
+}
+
+entity "cursos_disponible" as cursos_disponible {
+  * id : INT <<PK>>
+  --
+  obligatorio : TINYINT
+  clar : TINYINT
+  descripcion : TEXT
+  nombre : VARCHAR(150)
+  codigo : VARCHAR(20) <<UNIQUE>>
+  creditos : TINYINT
+  carrera_id : INT <<FK>>
+}
+
+entity "estado_perfil" as estado_perfil {
+  * id : INT <<PK>>
+  --
+  nombre : ENUM <<UNIQUE>>
+}
+
+entity "etiqueta" as etiqueta {
+  * id : INT <<PK>>
+  --
+  nombre : VARCHAR(255) <<UNIQUE>>
+}
+
+entity "material_extra" as material_extra {
+  * id : INT <<PK>>
+  --
+  fecha_subido : DATETIME(6)
+  fecha_modificado : DATETIME(6)
+  id_creador : INT <<FK>>
+  proyecto_id : INT <<FK>>
+}
+
+entity "pensum" as pensum {
+  * id : INT <<PK>>
+  --
+  semestre : INT
+  year_pensum_id : INT <<FK>>
+  carrera_id : INT <<FK>>
+  curso_disponible_id : INT <<FK>>
+}
+
+entity "proyecto" as proyecto {
+  * id : INT <<PK>>
+  --
+  descripcion : TEXT
+  stack : TEXT
+  fecha_publicado : DATETIME(6)
+  titulo : VARCHAR(200)
+  id_creador : INT <<FK>>
+}
+
+entity "proyecto_etiquetas" as proyecto_etiquetas {
+  * proyecto_id : INT <<PK, FK>>
+  * etiqueta_id : INT <<PK, FK>>
+}
+
+entity "publicacion_clases" as publicacion_clases {
+  * publicacion_id : INT <<PK, FK>>
+  * clase_id : INT <<PK, FK>>
+}
+
+entity "publicacion_etiquetas" as publicacion_etiquetas {
+  * publicacion_id : INT <<PK, FK>>
+  * etiqueta_id : INT <<PK, FK>>
+}
+
+entity "publicacion_material" as publicacion_material {
+  * publicacion_id : INT <<PK, FK>>
+  * material_id : INT <<PK, FK>>
+}
+
+entity "publicacion_proyectos" as publicacion_proyectos {
+  * publicacion_id : INT <<PK, FK>>
+  * proyecto_id : INT <<PK, FK>>
+}
+
+entity "publicacion_respuestas" as publicacion_respuestas {
+  * publicacion_id : INT <<PK, FK>>
+  * respuesta_id : INT <<PK, FK>>
+}
+
+entity "publicaciones_curso" as publicaciones_curso {
+  * id : INT <<PK>>
+  --
+  destacado_id : INT <<FK>>
+}
+
+entity "publicaciones_foro" as publicaciones_foro {
+  * id : INT <<PK>>
+  --
+  descripcion : VARCHAR(2500)
+  cant_valoracion : INT
+  hora_creacion : DATETIME(6)
+  hora_modificado : DATETIME(6)
+  titulo : VARCHAR(300)
+  id_creador : INT <<FK>>
+}
+
+entity "reporte" as reporte {
+  * id : INT <<PK>>
+  --
+  tipo : VARCHAR(10)
+  referencia_id : INT
+  motivo : VARCHAR(500)
+  estado : VARCHAR(20)
+  creado_en : DATETIME(6)
+  reportado_por_id : INT <<FK>>
+  deletedAt : DATETIME(6)
+}
+
+entity "respuesta" as respuesta {
+  * id : INT <<PK>>
+  --
+  cant_valoracion : INT
+  creado_en : DATETIME(6)
+  descripcion : VARCHAR(2000)
+  id_creador : INT <<FK>>
+  respuesta_padre : INT <<FK>>
+}
+
+entity "role" as role {
+  * id : INT <<PK>>
+  --
+  nombre : ENUM
+  descripcion : VARCHAR(255)
+}
+
+entity "usuario" as usuario {
+  * id : INT <<PK>>
+  --
+  nombre : VARCHAR(255)
+  apellidos : VARCHAR(255)
+  correo : VARCHAR(255) <<UNIQUE>>
+  password : VARCHAR(255)
+  description : VARCHAR(255)
+  creado_en : DATETIME
+  ultimo_acceso : DATETIME
+  deletedAt : DATETIME(6)
+  rol_id : INT <<FK>>
+  estado_perfil_id : INT <<FK>>
+}
+
+entity "usuario_carreras" as usuario_carreras {
+  * usuario_id : INT <<PK, FK>>
+  * carrera_id : INT <<PK, FK>>
+}
+
+entity "year_pensum" as year_pensum {
+  * id : INT <<PK>>
+  --
+  year : YEAR <<UNIQUE>>
+  deletedAt : DATETIME(6)
+}
+
+
+' ============================================
+' RELACIONES
+' ============================================
+
+usuario ||--o{ actividade
+proyecto ||--o{ archivos_proyecto
+usuario ||--o{ blog_articulo
+blog_articulo ||--o{ blog_etiquetas
+etiqueta ||--o{ blog_etiquetas
+blog_articulo ||--o{ blog_respuestas
+respuesta ||--o{ blog_respuestas
+usuario ||--o{ clases_grabada
+cursos_disponible ||--o{ curso_espacio
+usuario ||--o{ curso_espacio
+publicaciones_curso ||--o| curso_espacio
+curso_espacio ||--o{ curso_espacio_auxiliares
+usuario ||--o{ curso_espacio_auxiliares
+curso_espacio ||--o{ curso_espacio_estudiantes
+usuario ||--o{ curso_espacio_estudiantes
+cursos_disponible ||--o{ curso_prerequisitos
+cursos_disponible ||--o{ curso_prerequisitos
+carrera ||--o{ cursos_disponible
+usuario ||--o{ material_extra
+proyecto ||--o| material_extra
+year_pensum ||--o{ pensum
+carrera ||--o{ pensum
+cursos_disponible ||--o{ pensum
+usuario ||--o{ proyecto
+proyecto ||--o{ proyecto_etiquetas
+etiqueta ||--o{ proyecto_etiquetas
+publicaciones_curso ||--o| proyecto
+publicaciones_curso ||--o{ publicacion_clases
+clases_grabada ||--o{ publicacion_clases
+publicaciones_curso ||--o{ publicacion_material
+material_extra ||--o{ publicacion_material
+publicaciones_curso ||--o{ publicacion_proyectos
+proyecto ||--o{ publicacion_proyectos
+usuario ||--o{ publicaciones_foro
+publicaciones_foro ||--o{ publicacion_etiquetas
+etiqueta ||--o{ publicacion_etiquetas
+publicaciones_foro ||--o{ publicacion_respuestas
+respuesta ||--o{ publicacion_respuestas
+usuario ||--o{ reporte
+usuario ||--o{ respuesta
+respuesta ||--o{ respuesta
+role ||--o{ usuario
+estado_perfil ||--o{ usuario
+usuario ||--o{ usuario_carreras
+carrera ||--o{ usuario_carreras
+
+@enduml
